@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/beige.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="node_modules/highlight.js/styles/atom-one-dark-reasonable.css">
+		<script defer src="node_modules/fontawesome/generate.js"></script>
+		<script defer src="node_modules/fontawesome/index.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section id="title">
+						
+						<h1>
+							 PLS Fonctionnelle
+						</h1>
+						<i class="fa fa-cogs"></i> Ou comment estimer $\mathbb E[ \, Y \, \vert \, X = x \,]$ de façon smart en prenant en compte le lien entre $X$ et $Y$ <i class="fa fa-cogs"></i>
+
+					<aside class="notes">
+					
+					</aside>
+				</section>
+
+				<section style="font-size: 0.7em;" id="avant-propos">
+
+					ce que je ne vais <strong>pas</strong> traîter :
+
+					<br>
+					<ul>
+						<li> l'algorithme numériquement plus stable pour l'arithmétique en précision finie </li>
+						
+						$\rightarrow$ utile pour les informaticiens, mais pas pour mon exposé
+
+						<br>
+						<br>
+
+						<li>les détails des propriétés asymptotiques</li>
+
+
+						$\rightarrow$ sinon j'allais péter un plomb :
+						<br>
+						<br>
+						je vous épargnerai de ces formules : 
+
+						<br>
+
+						<img src="img/meme_pas_je_traite_ca.jpeg" alt="horreur" style="height: 10em;">
+
+						<img src="img/oui_oui.jpeg" alt="aled" style="height: 10em;">
+					</ul>
+				</section>
+
+				<section id="Contexte">
+
+					<section id="contexte-title" data-background-video="img/obama-confused.mp4" data-background-video-loop data-background-video-muted data-background-opacity="0.6">
+
+						<h1>un peu de contexte</h1>
+					</section>
+
+					<section id="contexte-model">
+						<h2>modèle</h2>
+
+						$Y = a + \displaystyle\int_K b(u)X(u)du + \varepsilon$
+
+						<br />
+						<br />
+
+						<small>dans le cas de cet exposé (et du papier) : </small>
+
+						<br />
+						
+						
+						<span style="font-size: 0.6em;">
+							$$\begin{array}{rrcll} 
+							K & & & \textsf{compact de } \mathbb R & \equiv \textsf{intervalle fermé}
+							\\
+							a& &\in& \mathbb R & \equiv scalaire
+							\\ 
+							b& : K \rightarrow \mathbb R &\in& \mathbb L^2(K) & \equiv fcn
+							\\
+							\varepsilon  & & \in & m(\Omega , \mathbb R ) & \equiv \operatorname{VA}( \mathbb R )
+							\\
+							X & & \in & m\left[ \Omega, \mathcal C^0( \mathbb R, \mathbb R ) \right] & \equiv \operatorname{VA}\left[ C^0( \mathbb R, \mathbb R ) \right]
+							\\
+							Y && \in & m(\Omega , \mathbb R) & \equiv \operatorname{VA}( \mathbb R )
+							\end{array}$$
+						</span>
+					</section>
+
+					<section>
+
+						comment estimer $m(x) = \mathbb E[ Y | X = x ] ?$
+
+					</section>
+
+					<section id="contexte-model-question">
+
+						<i class="fa fa-question"></i> Comment trouver $a \in \mathbb R$ et $b \in \mathbb L^2$ <i class="fa fa-question"></i>
+
+						<br /><br />
+
+						<span class="fragment fade-down"> <i class="fa fa-warning"></i> $\mathbb L^2$ est de dimension $\infty$ <i class="fa fa-warning"></i>  </span>
+
+						<span class="fragment fade-down"> $\displaystyle\sum_1^\infty \beta_i \psi_i = b \approx \sum_{1}^p \beta_i \psi_i$ </span>
+
+					</section>
+
+					<section id="contexte-b-et-sa-projection">
+						<h3> <i class="fa fa-pencil"></i> Notations <i class="fa fa-pencil"></i></h3> 
+						
+
+						<div class="flex-container" style="display: flex;">
+
+							<div style="flex: 1; margin-right: 10px; border: 1.5px solid black;" class="fragment fade-in">
+								<span style="font-size: 0.6em;">
+									base $( \psi_i : K \rightarrow \mathbb R )$ de $\mathbb L^2( K )$
+									$$F_n(\psi) = \operatorname{vect}( \psi_i )_{1,n}$$
+									$$F_\infty(\psi) = \operatorname{vect}( \psi_i )_{\mathbb N}=\mathbb L^2(K)$$
+								</span>
+							</div>
+							<div style="flex: 1;margin-left: 10px; border: 1.5px solid black;" class="fragment fade-in">
+								<span style="font-size: 0.6em;">
+									$$b = \sum\limits_{\mathbb N} \underbrace{\langle b \vert \psi_i \rangle}_{\beta_i} \, \psi_i$$
+
+									$$\hat b_p^{[\psi]} = P^\perp_{F_p(\psi)}( \, b \, ) = \sum_{i=1}^p \beta_i \psi_i$$
+								</span>
+							</div>
+						</div>
+
+						<br />
+
+						<p class="fragment fade-down">
+
+							<i class="fa fa-question"></i> quelle base choisir <i class="fa fa-question"></i>
+						</p>
+
+					</section>
+
+					<section>
+						<!-- <i class="fa fa-mouse-pointer"></i>
+						<i class="fa fa-sticky-note"></i>
+						<i class="fa fa-wikipedia-w"></i> -->
+						<p><i class="fa fa-lightbulb-o"></i> projeter sur une base adaptée aux données <i class="fa fa-lightbulb-o"></i></p>
+
+						<p class="fragment fade-down">nous appellerons cette base $\phi = (\phi_i)_{i \in \mathbb N}$</p>
+
+					</section>
+					
+
+
+					<!-- —————————————————————————————————————— ACP Théorème de Mercer et rpz KL ——————————————————————————————————————————————— -->
+
+
+
+
+					<section id="contexte-ACP-1">
+						<h3> <i class="fa fa-flag"></i> ACP Fonctionnelle <i class="fa fa-flag"></i></h3> 
+						<span style="font-size: 0.7em;">[Partie 1]</span>
+						<p style="font-size: 0.75em;" class="fragment fade-in"><i class="fa fa-lightbulb-o"></i> regarder la base qui est la plus adaptée à la variance de $X$ <i class="fa fa-lightbulb-o"></i></p>
+					
+						<br />
+
+						<p class="fragment fade-in" style="font-size: 0.7em;" >
+							"théorème spectral" (Mercer $\Rightarrow$) :
+
+							<span style="font-size: 0.9em;">
+							$$c(s,t) = \operatorname{cov}\left[ X(s), X(t) \right] \underset {\textsf{Mercer}}{=} \sum_{\mathbb N} c_i \phi_i(s) \phi_i(t)$$
+
+							$$\int \phi_k(u) c(u,t) du =c[ \phi_k ] = c_k \phi_k \implies \sum_{\mathbb N} c_k = \int_{K^2} c(s,t) dudt$$
+							</span>
+						</p>
+
+						<br />
+
+						<p class="fragment fade-in" style="font-size: 0.7em;">		
+							Théorème de Karhunen-Loève : <span style="font-size: 0.7em;">$\boxed{X = \mu + \sum_{\mathbb N} \langle X-\mu \vert \phi_i \rangle \phi_i}$</span>
+						</p>
+
+					</section>
+
+
+
+					<!-- ———————————————————————————————————————— ACP en pratique ————————————————————————————————————————————— -->
+
+
+
+
+					<section id="contexte-ACP-2">
+						<h3> <i class="fa fa-flag"></i> ACP Fonctionnelle <i class="fa fa-flag"></i></h3> 
+						<span style="font-size: 0.7em;">[Partie 2]</span>
+					
+						<br />
+
+						<p class="fragment fade-in" style="font-size: 0.7em;" >
+
+							<span style="font-size: 0.9em;">
+							$$\mathbb E \Vert X \Vert^2_{\mathbb L^2} = \int_K \mathbb E[X^2](u)du < \infty \implies  \sum c_i < \infty \implies \sum able$$
+
+							<p style="border: 1px solid black; font-size : 0.5em; margin-left : 15%; margin-right : 15%; padding : 3px" class="fragment fade-in">
+								<i class="fa fa-check"></i>on peut donc réordonner les termes par valeur propre décroissante, afin de sélectionner les composantes les plus informatives
+							</p>
+							</span>
+						</p>
+
+						<p class="fragment fade-down" style="font-size: 0.7em;">on peut maintenant approximer $b$ par $b_p = \displaystyle\sum_{i=1}^{p} \beta_i(\phi) \phi_i$</p>
+					</section>
+					<section id="contexte-ACP-3">
+						<h3> <i class="fa fa-flag"></i> ACP Fonctionnelle <i class="fa fa-flag"></i></h3> 
+						<span style="font-size: 0.7em;">[Partie 3]</span>
+						<p style="font-size: 0.75em;"><i class="fa fa-cogs"></i> la pratique <i class="fa fa-cogs"></i></p>
+						<p class="fragment fade-in" style="font-size: 0.7em;">		
+							en se rappelant le <a href="#contexte-model">modèle</a> : $Y = \mathbb E[Y] + \sum_{i \geq 1} \beta_i \langle X - \mathbb E [X] \vert \phi_i \rangle_{\mathbb L^2} + \varepsilon$
+						</p>
+
+						<p class="fragment fade-in" style="font-size: 0.7em;"> on observe $D = \left(Y_i[m], T_i[m], X_i[m] = X_i(T_i[m])\right)_{\begin{array}{l}i \in ⟦ 1,n ⟧ \\ m \in  ⟦ 1,M_i ⟧ \end{array}}$ <br />
+							
+							$$
+							D
+							\overset{①}{\rightarrow} \hat X
+							\overset{②}{\rightarrow} \hat \mu
+							\overset{③}{\rightarrow} \hat c
+							\overset{④}{\rightarrow} \hat \phi
+							\overset{⑤}{\rightarrow} \langle \, \hat x - \hat \mu \, \vert \, \hat \phi \, \rangle
+							\overset{⑥}{\rightarrow} \hat \beta
+							$$
+
+						</p>
+
+
+						<p class="fragment fade-in" style="font-size: 0.7em;">	
+							<br />
+							<i class="fa fa-cogs"></i>
+							<span style="font-size: 0.7em;"> $\boxed{\hat b_p = \displaystyle\sum_{i=1}^{p} \beta_i(\hat \phi) \hat \phi_i  = P^\perp_{F_p(\hat \phi)}( \, b \, )}$</span>
+							<i class="fa fa-cogs"></i>
+							<span style="font-size: 0.7em;">
+								$\underset {\textsf{Moindres Carrés}}\longrightarrow \hat \beta(\hat \phi) = \begin{bmatrix} \vdots \\ \hat \beta^{LS}_i(\hat \phi) \\ \vdots \end{bmatrix}$
+							</span>
+							</p>
+
+						<aside class="notes">
+							<a href="#contexte-model">retour au modele</a>
+						</aside>
+					</section>
+
+
+
+					<!-- ————————————————————————————————————— ACP Questions ———————————————————————————————————— -->
+
+
+
+					<section id="contexte-ACP-4">
+
+						<i class="fa fa-check"></i>
+						<strong>$\phi$ représente bien X
+						</strong>
+							<p class="fragment fade-in">
+								<strong>
+									<i class="fa fa-warning"></i>
+									<!-- <i class="fa fa-arrow-right"></i>  -->
+									et $b$ ?
+								</strong>
+							</p>
+							<p class="fragment fade-in">
+								<strong>
+
+									<i class="fa fa-warning"></i>
+									<!-- <i class="fa fa-arrow-right"></i>  -->
+									interactions entre $b$ (et donc $Y$) et $X$ ? 
+									<br />($Y = a + \int bX + \varepsilon$)
+								</strong>
+							</p>
+							
+
+
+					</section>
+
+
+					
+				</section>
+				
+
+
+
+				<!-- ———————————————————————————————————    PLS     ———————————————————————————————————————— -->
+
+
+
+
+				<section id="PLS">
+					<section id="contexte-PLS-gigachad" data-background-image="img/gigachad_by_haesch_dfbedkv.gif" data-background-opacity="0.4">
+						<h1>LA PLS FONCTIONNELLE</h1>
+						une vraie technique de GigaChad
+					</section>
+					<section id="PLS-non-fonctionnelle">
+						<h2>mini rappel : PLS (non fonctionnelle)</h2>
+
+						<ul style="font-size: 0.7em;" class="fragment fade-in">
+							<li>trouver le sous espace de l'espace engendré par $X$ qui explique le mieux la variance de l'espace engendré par $Y$</li>
+							
+						</ul>
+						<ul style="font-size: 0.7em;" class="fragment fade-in">
+							<li>on projette $X$ et $Y$ dans un nouvel espace</li>
+							
+							$\longrightarrow$ "latent space" [variable latente | latin : lateo - caché]
+						</ul>
+
+					</section>
+
+
+					
+
+
+					<!-- —————————————————————————————————————————— PLS Y chapeau ——————————————————————————————————————————— -->
+
+
+
+
+					<section id="PLS-Y-hat" style="font-size: 0.7em;">
+						
+						<h2>comme vu précédemment</h2>
+
+						<p>
+							$$Y = 
+							\underset{ 
+								\mathbb E [Y \vert X = x]
+								\underset{\textsf{notation}}{\equiv} 
+								m(x)
+							}
+							{
+								\boxed{
+									\mathbb E[Y] + \langle X - \mathbb E [X] \vert \, b \, \rangle_{\mathbb L^2} 
+								}
+							}
+							+ \varepsilon
+							$$
+
+							note : sur la base $\underset{\Vert \cdot \Vert}{\perp}$ $\psi$ de $\mathbb L^2$ : $b = \sum\limits_{i\geq 1} \langle b \vert \psi_i \rangle \psi_i$
+						</p>
+
+						<p class="fragment fade-in">
+							on approxime en projetant sur $F_p(\psi)$
+
+							
+							$$\hat Y_p^{[\psi]} 
+							= 
+							\underset{
+								\widehat {\mathbb{E}}_{p}^{[\psi] }[Y | X=x] 
+								\underset{\textsf{notation}}{\equiv} 
+								\hat m_{p}^{[\psi]}(x)
+							}
+							{\boxed{\mathbb E[Y] + \sum_{i = 1}^{\color{green}{p}} b_i \langle X - \mathbb E [X] \vert \psi_i \rangle_{\mathbb L^2}}} + \varepsilon$$
+						</p>
+							
+					</section>
+
+					
+
+					<!-- ——————————————————————————————————————— PLS Problème de minimisation —————————————————————————————————————————————— -->
+
+
+					<section id="PLS-pb-min" style="font-size: 0.6em;">
+						
+						<h2>Problème de minimisation</h2>
+						
+						
+						<span class="fragment fade-down">
+							<h4>notation</h4>
+
+							$$\langle f \vert g \rangle_{c( \cdot , \cdot )} \underset{\textsf{notation}}{\equiv} \int_{K^2}f(s)c(s,t)g(t) \, ds \, dt$$
+							
+							$$\Vert \cdot \Vert^2_{c(\cdot, \cdot)} : \begin{array}{ccc} \mathcal C^0(K) & \longrightarrow & \mathbb R_+ \\ f & \longmapsto & \int_{K^2} f(s) c(s,t) f(t) \, ds \, dt \end{array}$$
+						</span>
+
+						<span class="fragment fade-down">
+
+							<h4>expression du problème de minimisation</h4>
+							<p>
+								$$
+								\begin{align}
+								(\hat \psi_i^*)_{1,p} 
+								&= 
+								\underset{ \begin{array}{c}\psi_p \\ \langle \psi_i \vert \psi_p \rangle_{c(\cdot , \cdot)} = 0 \\ \Vert \psi_p \Vert = 1 \end{array} } {\operatorname{argmin}} 
+								\left[
+								\underset{(\psi_i)_{1,p-1}} {\operatorname{argmin}}  \operatorname{COV}\left( 
+									\underset{\hat \varepsilon_{p-1}^{[\psi]}}{\boxed{Y - \hat m_{p-1}^{[\psi]}(x)}} \, 
+									, 
+									\, \langle X \vert \psi_p \rangle \right)
+								\right]
+								\end{align}
+								$$
+							</p>
+						</span>
+
+						<p class="fragment fade-down"> <i class="fa fa-lightbulb-o"></i> $\approx$ comme en projection-pursuit <i class="fa fa-lightbulb-o"></i> </p>
+					</section>
+
+
+					<!-- ————————————————————————————————————————————————————————————————————————————————————— -->
+
+					
+
+
+					<!-- ————————————————————————————————————————————————————————————————————————————————————— -->
+
+
+
+					<section id="PLS-theorie-probleme" style="font-size: 0.8em;">
+						
+						<p> la PLS n'est pas un nouveau concept </p>
+
+						<p> elle est était déjà utilisée et même en FDA</p>
+
+						<p
+						class="fragment fade-down"
+						> <i class="fa fa-warning"></i> <strong>MAIS</strong> sans preuve rigoureuse <br> $\rightarrow$ consistance <br> $\rightarrow$ vitesse de convergence</p>
+
+					</section>
+
+					<section id="PLS-graph-non-annote">
+						<img src="img/graph1_non_annote.jpeg" style="height: 8em;" alt="">
+
+						<img src="img/graph2_non_annote.jpeg" style="height: 7em;" alt="">
+					</section>
+
+
+					<!-- ————————————————————————————————————————————————————————————————————————————————————— -->
+
+
+
+
+					<section id="PLS-apport-du-papier">
+						
+						apport de ce papier $\longrightarrow$ le développement théorique de la PLS Fonctionnelle
+
+						<br>
+						<br>
+
+						<p class="fragment fade-down">
+							<i class="fa fa-question-circle"></i> comment <i class="fa fa-question-circle"></i>
+						</p>
+
+						<br>
+						<br>
+
+						<p class="fragment fade-down">
+							en travaillant sur un objet plus simple et aux propriétés de convergence équivalentes
+						</p>
+
+					</section>
+
+					
+				</section>
+
+				<section id="APLS-theorie">
+					<section id="APLS-title" data-background-image="img/think-math.gif" data-background-opacity="0.2">
+						
+						<h1>Alternative-PLS</h1>
+
+						<p>la réponse à un problème de développement théorique</p>
+
+					</section>
+
+					<section id="APLS-theorie-overview" style="font-size: 0.6em;">
+					
+					<h2>overview</h2>
+
+					$$
+						\begin{array}{rccll}
+
+						& & c(s,t) = \sum c_i \overset{\textsf{base ACP } \left(✅ \underset{\Vert \cdot \Vert}{\perp} \right)}{\boxed{\phi_i(s) \phi_i(t)}}
+						\\
+
+						& & \downarrow
+
+						\\
+
+						& \rightarrow&
+						
+						\underset{\textsf{développement } \operatorname{vect}\left(c^k[b]\right)_{1,p}}{
+							\boxed{
+
+								\tilde{m}_p^{[c]} 
+							}
+						}
+						
+						
+						& \leftarrow & \textsf{pour dvp la théorie} 
+						& \left[
+						\begin{array}{c}
+						\textsf{base non } {\perp}
+						\\
+						\textsf{explicite}
+						\end{array}
+						\right]
+
+						\\
+
+						m(x) & & \Updownarrow &
+
+						\\
+
+						&\rightarrow&
+						
+						\underset{\textsf{base PLS }}
+						{
+							\boxed{
+
+								\tilde{m}_p^{[\psi]} 
+
+							}
+						}
+						
+						& \leftarrow & \textsf{pour la pratique} 
+						& \left[
+						\begin{array}{c}
+						\textsf{base } \underset{\Vert \cdot \Vert}{\perp}
+						\\
+						\textsf{non explicite}
+						\end{array}
+						\right]
+
+						\\
+
+						\end{array}
+					$$
+
+					<p class="fragment fade-down">
+						puis on va mettre des chapeaux car on est statisticiens 🤓
+					</p>
+
+					<p class="fragment fade-down">
+						et on va pleurer à regarder $\Vert \hat m_p - m \Vert$ car on est matheux ☠️
+					</p>
+
+					</section>
+
+
+
+					<section id="APLS-theorie-psi-dans-C", style="font-size: 0.7em;">
+					
+						<h1>① équivalence ①</h1>
+
+
+						<p class="fragment fade-in-then-semi-out"> on aimerait montrer que $\forall p \quad \psi_p = \sum a_i c^i[b]$
+							
+							<br>
+
+							ie : $\psi_p \in \operatorname{vect} \left( c^i[b] \right)_{1,p}$
+						</p>
+
+						<p class="fragment fade-down">$\psi_p \in \frac{ \operatorname{vect} \left( c^i[b] \right)_{1,p} }{\operatorname{sign}} = \mathcal C_{1,p}[b]$</p>
+
+
+						<br>
+
+						<p class="fragment fade-in-then-out">$P_{F_p(\psi)}^\perp \left[ f \in \mathcal C^0(K, \mathbb R) \right] \in \operatorname{vect}(\psi_i)_{1,p} \subset \mathcal C_{1,p}[f]$</p>
+
+						<p class="fragment fade-in-then-out">$P_{F_p(\psi)}^\perp \left[ f \in \mathcal C^0(K, \mathbb R) \right] \in \operatorname{vect}(\psi_i)_{1,p} = \mathcal C_{1,p}[f]$</p>
+
+					</section>
+					
+					<section id="PLS-determination-de-la-base" style="font-size: 0.7em;">
+			
+						<h3>construction de la base PLS $\; \psi$</h3>
+
+						<strong>théorème [3.1]</strong>
+
+						$$
+						\boxed{
+							\int _K \mathbb E[X^2](u)du < \infty 
+						}
+						\implies 
+						\boxed{
+							\begin{array}{l}
+								\exists ! \gamma \in \mathbb R^p \\
+								\rightarrow  \psi_p = \gamma_0 \left( c \left[ \, b - P_{F_{p-1}(\psi)}(b) \right] + \sum_{k=1}^{p-1} \gamma_k \psi_k \,  \right)
+								\\
+								\rightarrow \langle \psi_k \vert \psi_p \rangle_{c(\cdot, \cdot)} = 0 \quad k < p
+								\\
+								\rightarrow \Vert \psi_p \Vert = 1
+							\end{array}
+						}
+						$$
+
+						<p>
+							on a : 
+							$\psi_p = \Gamma_p( c[\cdot], b , \psi_{1:p-1} )\quad$ et donc $\quad \psi_p = \sum\limits_{i=1}^p u_i c^i[b]$
+						</p>
+						<p>
+							$\implies \operatorname{dim} < \infty \quad \tilde m_p^{[\psi]} \iff  \tilde m_p^{[c]}$
+						</p>
+
+					</section>
+					
+
+					<section>
+
+						<p class="fragment semi-fade-out">
+							$\psi_1 = \frac{c[b]}{\Vert c[b] \Vert}$ (3.1)
+						</p>
+
+						<p class="fragment fade-in-then-semi-out">
+							$\psi_2 = \alpha_0( c[b - \langle b \vert \psi_1 \rangle \psi_1] + \alpha_1 \frac{c[b]}{\Vert c[b] \Vert} )$ (3.1)
+						</p>
+
+						<p class="fragment fade-in-then-semi-out">
+							$c[ c[b] ] = c^2[b]$ (base ACP : mercer)	
+						</p>
+
+						<p class="fragment fade-in-then-semi-out">$\implies \psi_p = \sum_i^p a_i c^i[b]$</p>
+
+						<p class="fragment fade-in"> ⚠️ ne pas oublier que c'est au signe près car :
+
+							<br>
+
+							$\alpha_0$ déterminé par $\Vert \psi_p \Vert = 1$
+						</p>
+
+					</section>
+
+
+					<section id="APLS-theorie-estimation-de-b" style="font-size: 0.7em;">
+						
+						<p>maintenant on aimerait bien les estimer, $k = \begin{bmatrix} \vdots \\ k_i \\ \vdots \end{bmatrix}_{1,p}$ qui vérifient </p>
+
+						<p>
+
+							$$
+							\begin{align}
+							m(x) &= \mathbb E[Y] + \langle \, X - \mu \, \vert \, b \, \rangle
+							\\
+							\tilde m_p^{[c]}(x) &= \mathbb E[Y] + \langle \, X - \mu \, \vert \, \sum\limits_{i=1}^p k_i c^i [b] \, \rangle
+							
+							\end{align}
+							$$
+						</p>
+
+						<p class="fragment fade-down">
+
+							$$\left( k_i \right)_{1,p} = \underset{
+								(a_i)_{1,p}}
+								{\operatorname{argmin}} 
+								\mathbb E \left[ 
+								\left(
+									\underbrace{
+										\langle \, X - \mu \, \vert \, b \, \rangle - \langle \, X - \mu \, \vert \, \sum\limits_{i=1}^p a_i c^i [b] \, \rangle
+									}_{
+										m(X) - \tilde m_p^{[c] } (X)
+									}
+									\right)^2 
+									\right]$$
+						</p>
+
+					</section>
+
+					<section id="APLS-theorie-convergence-de-bp" style="font-size: 0.7em;">
+						
+
+						<h1>② convergence ②</h1>
+						<strong>théorème [3.2]</strong>
+						
+
+						<br>
+
+						<p>$$\begin{array}{c} \mathbb E \Vert X \Vert^2 < \infty \\ \operatorname{sp} c[ \, \cdot \, ] \subset \mathbb R_+^* \end{array} \implies b_p \xrightarrow[p \rightarrow \infty]{\mathbb L^2(K)} b$$</p>
+
+						<p>et donc $\boxed{b = \sum\limits_i^\infty k_i c^i[b]}$</p>
+
+						<p class="fragment fade-down">⚠️ pareil ne pas oublier que les $k_i$ ne sont pas uniques ⚠️</p>
+
+					</section>
+					
+
+
+					<section id="APLS-theorie-lien-ACP" style="font-size: 0.7em;">
+
+						<h2>expression de l'APLS dans la base ACP</h2>
+
+
+						<br>
+
+						<p>
+							$$\tilde b_p = \sum_i^p k_i c^i[b] = \sum_k^\infty \beta_k \left( \sum_i^p k_i c_k^i \right) \phi_k$$
+
+						</p>
+
+						<br>
+						<br>
+						rappel : $c(s,t) = \sum_i c_i \phi_i(s) \phi_i(t)$
+
+					</section>
+
+
+					
+				</section>
+
+
+
+				<section>
+					<section id="APLS-empirique">
+						<h1>L'Empirique</h1>
+					</section>
+
+					<section>
+						$$
+						\begin{array}
+
+						\tilde{m}_p(X) &=& \mathbb E [Y] &+ \langle X - \mu | \tilde b_p \rangle
+						\\
+
+						\downarrow & & \downarrow & \quad \quad \downarrow
+
+						\\
+						\hat m_p(x) &=& \overline Y &+ \langle X - \hat \mu | \hat b_p \rangle
+
+						\end{array}
+						$$
+					</section>
+
+					<section>
+						<strong>théorème [3.5]</strong>
+
+						$$\min\limits_k \mathbb E [ (m(X) - \tilde m_p^{[c]}(x))^2 ] \longrightarrow k = H^{-1} \alpha$$
+
+						$H = \begin{bmatrix} \langle c^{i+1}[b] | c^j[b] \rangle \end{bmatrix}_{ij} \quad$ et $\quad \alpha = \begin{bmatrix} \vdots \\ c^i[b] \\ \vdots \end{bmatrix}_i$
+					</section>
+
+					<section>
+						$$\hat k = \hat H^{-1} \hat \alpha$$
+					</section>
+
+					<section style="font-size: 0.6em;">
+						<div class="flex-container" style="display: flex;">
+
+							<div style="flex: 1; margin-right: 10px; border: 1.5px solid black;">
+								ce qu'on approxime :
+								$$
+								\begin{array}
+								\hat c(s,t) &
+								\\
+								\hat c[b] &
+								\\
+								&\longrightarrow \hat k
+								\\
+								\hat c^i[b] &
+								\\
+								\hat H = [\hat h_{ij}]_{ij} &
+								\end{array}
+								$$
+							</div>
+
+							<div style="flex: 1; margin-right: 10px; border: 1.5px solid black;" class="fragment fade-in">
+								
+								$$\mathbb E \rightarrow \frac 1 n \sum_{i=1}^n$$
+
+								$$\hat k = \underset{k}{\operatorname{argmin}} \frac 1 n \sum_i(Y_i - \overline Y) - \sum^p_j k_j \int(X - \overline X) \hat c ^j[b]$$
+
+								$$\hat c(s,t) \frac 1 n \sum_i (X_i(s) - \overline X(s))(X_i(t) - \overline X(t))$$
+
+								$$\hat c[b] = \frac 1 n \sum_i (X_i - \overline X)(Y_i - \overline Y)$$
+								
+								$$\hat c^{i+1}[b] = \int \hat c^i[b](u) \hat c(u,t) du$$
+
+							</div>
+							</div>
+							</section>
+
+							<section>
+
+								$\longrightarrow$ contrôler en $p$
+								
+								<br> <br> <br>
+								
+								$\longrightarrow$ contrôler en $n$
+								<br>
+								<p class="fragment fade-down">
+
+									$\rightarrow$ prendre $p(n)$ approprié
+								</p>
+
+							</section>
+				</section>
+
+				<section id="APLS-asymptotique">
+
+
+					<section id="APLS-asymptotique-">
+
+						<h1>Résultats Asymptotiques</h1>
+					</section>
+
+					<section>
+
+						$$\hat c = c + \frac 1 {\sqrt n} \overset{\color{blue}{[X_i \, \mu]}}{\underset{\mathbb P}{\mathcal O}(1)} + \frac 1 n \overset{\color{blue}{[\overline X \, \mu]}}{\underset{\mathbb P}{\mathcal O}(1)}$$
+
+						$$\hat c[b] = c[b] = \frac 1 {\sqrt n} \overset{\color{blue}{[X_i \, Y_i \, \mu]}}{\underset{\mathbb P}{\mathcal O}(1)} + \frac 1 n \overset{\color{blue}{[\overline X \, \overline Y \, \mu]}}{\underset{\mathbb P}{\mathcal O}(1)}$$
+
+						$$\hat c^i[b] = c^i[b] + \underset{\mathbb P}{\mathcal O}( \frac 1 {\sqrt n})$$
+
+						$$$$
+
+
+					</section>
+
+					<section>
+
+						<p class="fragment semi-fade-out">
+
+							$$\sqrt n (\hat h_{ij} - h_{ij}) \sim \mathcal N(0, \sigma_{ij}^2)$$
+						</p>
+
+						<p class="fragment fade-in-then-semi-out">
+
+							
+							$$\Vert \hat c [b] - (c[b] + \frac \varepsilon {\sqrt n}) \Vert_\infty = \underset{\mathbb P}{\mathcal O}(n^{-1})$$
+							
+						</p>
+
+						<p class="fragment fade-in">
+
+							$$\Vert \hat k - k \Vert = \underset{\mathbb P}{\mathcal O}( \frac{1 + \Vert k \Vert}{n^{1/2} \lambda_{min}(H_p)} + \frac{1}{n \lambda_{min}(H_p)^3} )$$
+						</p>
+							
+					</section>
+
+
+					<section style="font-size: 0.7em;">
+						<p>
+
+							$$\Vert \hat k - k \Vert = \underset{\mathbb P}{\mathcal O}( \frac{1 + \Vert k \Vert}{n^{1/2} \lambda_{min}(H_p)} + \frac{1}{n \lambda_{min}^3(H_p)} )$$
+						</p>
+							
+						<p>
+							$$\boxed{
+
+								\begin{array}{ccc}
+								\operatorname{dim} < \infty & & \operatorname{dim} = \infty 
+								\\
+								\textsf{non sing} & & \textsf{sing}
+								\\
+								\lambda_{min}(H_p) & \xrightarrow[p \rightarrow \infty]{} & \lambda_{min}(H) = 0
+								\end{array}
+							}
+							$$
+						</p>
+
+						<p class="fragment fade-down">
+							$\implies$ on a besoin que $n^{1/2} \lambda_{min}(H_p) \xrightarrow[n \rightarrow \infty]{} \infty$ 
+							
+							<br><br>
+							
+							ie $p(n) \rightarrow \infty$ à une vitesse $\leq \sqrt n$ 
+						</p>
+					</section>
+
+
+					<section style="font-size: 0.7em;">
+
+						$$n^{-1/2} \lambda_{min}(H_p) \Vert k \Vert + \frac{1}{n \lambda_{min}^3(H_p)} \xrightarrow[n \rightarrow \infty]{} 0$$
+
+						$$\Downarrow$$
+
+						$$\mathbb E \left[ \left\{\hat m_p(X) - m(X) \right\}^2 | X_{1:n} \right] = \underset{\mathbb P}{\mathcal O}( \frac{1 + \Vert k \Vert}{n^{1/2} \lambda_{min}(H_p)} + \frac{1}{n \lambda_{min}^3(H_p)} )$$
+
+					</section>
+
+				</section>
+
+
+				<section id="PLS-resultats-algo">
+
+
+					<section>
+						<img src="img/graph1.jpeg" style="height: 8em;" alt="">
+
+						<img src="img/graph2.jpeg" style="height: 7em;" alt="">
+					</section>
+
+				</section>
+
+				<section style="font-size: 0.6em;">
+					<h1>💬 autres trucs à dire 💬</h1>
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script src="plugin/math/mathjax3.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				jumpToSlide : true,
+				mathjax3: {
+				// 			// cdn
+				// 			mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+				// 			// local
+							mathjax : './node_modules/mathjax/es5/tex-mml-chtml.js',
+							tex: 
+							{
+								inlineMath: [ [ '$', '$' ], [ '\\(', '\\)' ]  ]
+							},
+							options: 
+							{
+								skipHtmlTags: [ 'script', 'noscript', 'style', 'textarea', 'pre' ]
+							},
+						},
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax3 ]
+			});
+		</script>
+	</body>
+</html>
