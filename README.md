@@ -1,5 +1,15 @@
 # Presentation pour le cours ENSAI 3A [intro à la FDA] : Alternative PLS for Functional Data 
 
+<a  href="https://revealjs.com/">
+    <img src="https://custom-icon-badges.demolab.com/badge/framework-reveal.js-yellow?style=for-the-badge&logo=js&logoColor=black">
+</a>
+<a  href="https://www.mathjax.org/">
+    <img src="https://custom-icon-badges.demolab.com/badge/NPM package-mathjax-079992?style=for-the-badge&logo=web&logoColor=black">
+</a>
+<a  href="https://www.jstor.org/stable/41713637">
+    <img src="https://custom-icon-badges.demolab.com/badge/-références-f19066?style=for-the-badge&logo=book&logoColor=black">
+</a>
+
 Exposé sur la méthodologie impliquée dans la PLS fonctionnelle, basée sur l'article :
 
 > Delaigle, Aurore, and Peter Hall. “METHODOLOGY AND THEORY FOR PARTIAL LEAST SQUARES APPLIED TO FUNCTIONAL DATA.” The Annals of Statistics, vol. 40, no. 1, 2012
@@ -18,7 +28,18 @@ Il se pourrait qu'un script en LaTeX voit le jour lorsque j'aurais le temps, pou
   <a href="https://revealjs.com">
   <img src="https://hakim-static.s3.amazonaws.com/reveal-js/logo/v1/reveal-black-text-sticker.png" alt="reveal.js" width="500">
   </a>
-  <br><br>
-  <a href="https://github.com/hakimel/reveal.js/actions"><img src="https://github.com/hakimel/reveal.js/workflows/tests/badge.svg"></a>
-  <a href="https://slides.com/"><img src="https://s3.amazonaws.com/static.slid.es/images/slides-github-banner-320x40.png?1" alt="Slides" width="160" height="20"></a>
+  <br>
+  permet de réaliser des slides avec des technologies web
 </p>
+
+### Mathjax
+
+<p align="center">
+  <a  href="https://www.mathjax.org/">
+  <img src="https://www.mathjax.org/badge/mj-logo.svg" width="500">
+  </a>
+  <br>
+  permet de faire le rendu des équations mathématiques en LaTeX
+</p>
+
+---
