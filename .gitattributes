@@ -1,4 +1,33 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 # Do not count javascript and and css files in the repository calculation
-
+*.js linguist-documentation
+*.json linguist-documentation
+*.scss linguist-documentation
+*.css linguist-documentation
+*.html linguist-documentation
+*.md linguist-documentation
+*.txt linguist-documentation
+*.yml linguist-documentation
+*.yaml linguist-documentation
+*.lock linguist-documentation
+*.js.* linguist-documentation
+*.json.* linguist-documentation
+*.scss.* linguist-documentation
+*.css.* linguist-documentation
+**/node_modules/* linguist-documentation
+*.cjs linguist-documentation
+*.1 linguist-documentation
+*.2 linguist-documentation
+*.3 linguist-documentation
+*.4 linguist-documentation
+*.5 linguist-documentation
+*.6 linguist-documentation
+*.7 linguist-documentation
+*.8 linguist-documentation
+*.9 linguist-documentation
+*.10 linguist-documentation
+*.11 linguist-documentation
+*.12 linguist-documentation
+*.13 linguist-documentation
+*.14 linguist-documentation
