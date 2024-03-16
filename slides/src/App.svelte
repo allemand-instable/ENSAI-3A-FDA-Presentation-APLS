@@ -14,6 +14,7 @@
         deck.initialize();
       });
 
+    //   import "node_modules/feather-icons/dist/feather.js";
 </script>
 
 <svelte:head>

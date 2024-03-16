@@ -7,7 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       $slides: '/src/slides',
-      $APLS: '/src/slides/APLS'
+      $APLS: '/src/slides/APLS',
+      $lib: "/src/lib"
     },
   },
 });

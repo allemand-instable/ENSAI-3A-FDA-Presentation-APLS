@@ -1,4 +1,4 @@
-<section id="title">
+<section id="title" data-background-image="img/blackboard-curves.jpg" data-background-opacity="0.17">
     <h1>PLS Fonctionnelle</h1>
     <i class="fa fa-cogs"></i> Ou comment estimer {`$\\mathbb E[ \\, Y \\, \\vert \\, X
     = x \\,]$`} de façon s mart en prenant en compte le lien entre {`$X$`} et {`$Y$`}
